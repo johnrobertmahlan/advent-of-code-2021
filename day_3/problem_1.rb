@@ -1,42 +1,45 @@
 nums = File.read("input.txt").split("\n")
 
-def gamma_digits(nums)
-  firsts = nums.map {|n| n[0]}
-  seconds = nums.map {|n| n[1]}
-  thirds = nums.map {|n| n[2]}
-  fourths = nums.map {|n| n[3]}
-  fifths = nums.map {|n| n[4]}
-  sixths = nums.map {|n| n[5]}
-  sevenths = nums.map {|n| n[6]}
-  eighths = nums.map {|n| n[7]}
-  ninths = nums.map {|n| n[8]}
-  tenths = nums.map {|n| n[9]}
-  elevenths = nums.map {|n| n[10]}
-  twelfths = nums.map {|n| n[11]}
-  gammas = [firsts, seconds, thirds, fourths, fifths, sixths, sevenths, eighths, ninths, tenths, elevenths, twelfths]
-  gamma = gammas.map {|g| gamma_rate(g)}.join()
+MAX_IDX = 12
+
+BINARY_MAPPING = {
+    0   => 2048,
+    1   => 1024,
+    2   => 512,
+    3   => 256,
+    4   => 128,
+    5   => 64,
+    6   => 32,
+    7   => 16,
+    8   => 8,
+    9   => 4,
+    10  => 2,
+    11  => 1
+  }
+
+def calculate(nums)
+  idx = 0
+  gamma_digits = []
+  epsilon_digits = []
+
+  loop do
+    digits = nums.map {|n| n[idx]}
+    new_gamma_digit = gamma_rate(digits)
+    new_epsilon_digit = epsilon_rate(digits)
+    gamma_digits.push(new_gamma_digit)
+    epsilon_digits.push(new_epsilon_digit)
+    idx += 1
+    break if idx == MAX_IDX
+  end
+  gamma = gamma_digits.join
+  epsilon = epsilon_digits.join
+
+  calculate_power_consumption(convert_to_decimal(gamma), convert_to_decimal(epsilon))
 end
 
 def gamma_rate(digits)
   ones, zeros = digits.partition {|d| d == "1"}
   ones.count > zeros.count ? 1 : 0
-end
-
-def epsilon_digits(nums)
-  firsts = nums.map {|n| n[0]}
-  seconds = nums.map {|n| n[1]}
-  thirds = nums.map {|n| n[2]}
-  fourths = nums.map {|n| n[3]}
-  fifths = nums.map {|n| n[4]}
-  sixths = nums.map {|n| n[5]}
-  sevenths = nums.map {|n| n[6]}
-  eighths = nums.map {|n| n[7]}
-  ninths = nums.map {|n| n[8]}
-  tenths = nums.map {|n| n[9]}
-  elevenths = nums.map {|n| n[10]}
-  twelfths = nums.map {|n| n[11]}
-  epsilons = [firsts, seconds, thirds, fourths, fifths, sixths, sevenths, eighths, ninths, tenths, elevenths, twelfths]
-  epsilon = epsilons.map {|e| epsilon_rate(e)}.join()
 end
 
 def epsilon_rate(digits)
@@ -46,45 +49,22 @@ end
 
 def convert_to_decimal(num)
   total = 0
-  num.each_char.with_index do |num, idx|
-    case idx
-    when 0
-      num == "1" ? total += 2048 : total += 0
-    when 1
-      num == "1" ? total += 1024 : total += 0
-    when 2
-      num == "1" ? total += 512 : total += 0
-    when 3
-      num == "1" ? total += 256 : total += 0
-    when 4
-      num == "1" ? total += 128 : total += 0
-    when 5
-      num == "1" ? total += 64 : total += 0
-    when 6
-      num == "1" ? total += 32 : total += 0
-    when 7
-      num == "1" ? total += 16 : total += 0
-    when 8
-      num == "1" ? total += 8 : total += 0
-    when 9
-      num == "1" ? total += 4 : total += 0
-    when 10
-      num == "1" ? total += 2 : total += 0
-    when 11
-      num == "1" ? total += 1 : total += 0
+  idx = 0
+  
+  loop do
+    if num[idx].to_i == 1
+      total += BINARY_MAPPING[idx]
     end
+    idx += 1
+    break if idx == MAX_IDX
   end
+
   total
+
 end
 
-def calculate_power_consumption(nums)
-  convert_to_decimal(gamma_digits(nums)) * convert_to_decimal(epsilon_digits(nums))
+def calculate_power_consumption(gamma, epsilon)
+  gamma * epsilon
 end
 
-p gamma_digits(nums)
-p convert_to_decimal(gamma_digits(nums))
-
-p epsilon_digits(nums)
-p convert_to_decimal(epsilon_digits(nums))
-
-p calculate_power_consumption(nums) # should equal 2035764
+p calculate(nums)
