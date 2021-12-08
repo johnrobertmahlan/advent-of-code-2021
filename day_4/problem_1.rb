@@ -1,7 +1,7 @@
 input = File.read("input.txt").split("\n")
 
 bingo_numbers = input.first
-# nums = bingo_numbers.split(",")
+nums = bingo_numbers.split(",")
 
 bingo_boards = input[1..-1]
 
@@ -72,7 +72,7 @@ def call_a_number(nums, board)
             #   p board.find {|bd| bd.last == board.last}
             #   puts "WE FOUND IT"
             #   puts "IT'S THIS BOARD: #{board}"
-              return board
+              return [num, board]
               # COOL SO THIS WILL RETURN THE UPDATED BOARD
               # NOW I HAVE TO PAIR IT WITH THE ONE IT CAME FROM
             end
@@ -130,12 +130,12 @@ end
 # p "Here are the columns of the first board:"
 # p get_columns(get_first_bingo_board(bingo_boards))
 
-nums = [22, 13, 17, 11, 0]
+# nums = [22, 13, 17, 11, 0]
 # p bingo_boards
 
-p get_first_bingo_board(bingo_boards).map {|str| str.split(" ")}
-p get_second_bingo_board(bingo_boards).map {|str| str.split(" ")}
-p get_third_bingo_board(bingo_boards).map {|str| str.split(" ")}
+# p get_first_bingo_board(bingo_boards).map {|str| str.split(" ")}
+# p get_second_bingo_board(bingo_boards).map {|str| str.split(" ")}
+# p get_third_bingo_board(bingo_boards).map {|str| str.split(" ")}
 
 board_one = get_first_bingo_board(bingo_boards).map {|str| str.split(" ")}
 board_two = get_second_bingo_board(bingo_boards).map {|str| str.split(" ")}
@@ -146,8 +146,22 @@ boards = [board_one, board_two, board_three]
 p "This is the winner: "
 p call_a_number(nums, bingo_boards)
 
-def check_boards(formatted_boards, bingo_boards)
-  formatted_boards.any? {|board| board.last == call_a_number([22, 13, 17, 11, 0], bingo_boards).last}
+# def check_boards(formatted_boards, bingo_boards, nums)
+#   winner = formatted_boards.find {|board| board.last == call_a_number(nums, bingo_boards).last}
+#   # NOW I HAVE TO RECOVER WHICH ROW OR COLUMN WON
+#   new_nums = winner.find {|w| w.all? {|n| nums.include?(n.to_i)}}
+# end
+
+def calculate_final_score(nums, bingo_boards)
+  winner = call_a_number(nums, bingo_boards)
+  multiplier = winner.first.to_i
+  sum = winner.last.reject {|w| w.empty? }.reduce(0) do |total, arr|
+    total += arr.map {|n| n.to_i }.reduce(:+)
+    total
+  end
+  multiplier * sum
 end
 
-p check_boards(boards, bingo_boards)
+p calculate_final_score(nums, bingo_boards)
+
+# p check_boards(boards, bingo_boards, nums)
