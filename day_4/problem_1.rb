@@ -84,4 +84,6 @@ end
 
 p calculate_final_score(nums, bingo_boards)
 
-# p check_boards(boards, bingo_boards, nums)
+# MY ANSWER IS TOO HIGH, BUT I'M ONLY USING THREE BOARDS, AND THE LAST ONE HAS ALMOST EVERYTHING IN IT
+# I NEED TO USE AN ITERATOR TO CREATE BOARDS
+# REFACTOR!!!
