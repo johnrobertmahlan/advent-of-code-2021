@@ -58,10 +58,7 @@ def call_a_number(nums, board)
   board_three = get_third_bingo_board(board).map {|str| str.split(" ")}
 
   boards = [board_one, board_two, board_three]
-#   boards = [board_one]
-  p "This is board one: "
-  p board_one
-#   while boards.none? { |board| board.any? {|b| b.empty?} }
+
     nums.each do |num|
       boards.each do |board|
         board = board.reduce([]) do |new_board, arr|
@@ -72,13 +69,18 @@ def call_a_number(nums, board)
             new_board = board
             # p board
             if board.any? {|b| b.empty? }
-              puts "WE FOUND IT"
-              puts "IT'S THIS BOARD: #{board}"
+            #   p board.find {|bd| bd.last == board.last}
+            #   puts "WE FOUND IT"
+            #   puts "IT'S THIS BOARD: #{board}"
+              return board
+              # COOL SO THIS WILL RETURN THE UPDATED BOARD
+              # NOW I HAVE TO PAIR IT WITH THE ONE IT CAME FROM
             end
             board
           end
         end
       end
+    # p board
     # end
     # p board
     # p board.length
@@ -129,4 +131,23 @@ end
 # p get_columns(get_first_bingo_board(bingo_boards))
 
 nums = [22, 13, 17, 11, 0]
-call_a_number(nums, bingo_boards)
+# p bingo_boards
+
+p get_first_bingo_board(bingo_boards).map {|str| str.split(" ")}
+p get_second_bingo_board(bingo_boards).map {|str| str.split(" ")}
+p get_third_bingo_board(bingo_boards).map {|str| str.split(" ")}
+
+board_one = get_first_bingo_board(bingo_boards).map {|str| str.split(" ")}
+board_two = get_second_bingo_board(bingo_boards).map {|str| str.split(" ")}
+board_three = get_third_bingo_board(bingo_boards).map {|str| str.split(" ")}
+
+boards = [board_one, board_two, board_three]
+
+p "This is the winner: "
+p call_a_number(nums, bingo_boards)
+
+def check_boards(formatted_boards, bingo_boards)
+  formatted_boards.any? {|board| board.last == call_a_number([22, 13, 17, 11, 0], bingo_boards).last}
+end
+
+p check_boards(boards, bingo_boards)
