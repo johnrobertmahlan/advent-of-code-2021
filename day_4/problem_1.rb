@@ -1,11 +1,12 @@
 input = File.read("input.txt").split("\n")
 
 bingo_numbers = input.first
+# nums = bingo_numbers.split(",")
 
 bingo_boards = input[1..-1]
 
-p "These are all the boards:"
-p bingo_boards
+# p "These are all the boards:"
+# p bingo_boards
 
 def get_first_bingo_board(boards)
   boards[1..5]
@@ -42,7 +43,7 @@ def get_columns(board)
   columns = [column_1, column_2, column_3, column_4, column_5]
 end
 
-def call_a_number(num, board)
+def call_a_number(nums, board)
   # the idea here is to pass in the number called
   # and then delete any instance of that number from every board
   # so suppose num = 22
@@ -50,19 +51,66 @@ def call_a_number(num, board)
   # the boards themselves are arrays or strings, so I can gsub out the num on those
   # and then call get_rows and get_columns to check if there are any that are EMPTY
   # that's the win condition
+#   nums = nums.map {|n| n.to_i }
   
-  p "Here is the first board before anything happens:"
-  p get_first_bingo_board(board)
-  # remove num from first bingo board:
-  # OKAY THIS WORKS
-  new_first_board = get_first_bingo_board(board).map {|str| str.split(" ")}.map do |arr|
-    arr = arr - [num.to_s] if arr.include?(num.to_s)
-    arr
+  board_one = get_first_bingo_board(board).map {|str| str.split(" ")}
+  board_two = get_second_bingo_board(board).map {|str| str.split(" ")}
+  board_three = get_third_bingo_board(board).map {|str| str.split(" ")}
+
+  boards = [board_one, board_two, board_three]
+#   boards = [board_one]
+  p "This is board one: "
+  p board_one
+#   while boards.none? { |board| board.any? {|b| b.empty?} }
+    nums.each do |num|
+      boards.each do |board|
+        board = board.reduce([]) do |new_board, arr|
+          if arr.include?(num.to_s)
+            new_arr = arr - [num.to_s] 
+            idx = board.index(arr)
+            board[idx] = new_arr
+            new_board = board
+            # p board
+            if board.any? {|b| b.empty? }
+              puts "WE FOUND IT"
+              puts "IT'S THIS BOARD: #{board}"
+            end
+            board
+          end
+        end
+      end
+    # end
+    # p board
+    # p board.length
+    # p get_rows(board)
+    # p get_rows(board).any? {|b| b.empty? }
   end
-#   new_second_board = get_second_bingo_board(board).map {|str| str.gsub(/num/, "")}
-#   new_third_board = get_third_bingo_board(board).map {|str| str.gsub(/num/, "")}
-  p "And here is that same board after num is removed:"
-  p new_first_board
+    
+#   until boards.any? {|board| board.any? {|b| b.empty?} }
+#     nums.each do |num|
+#         new_boards = boards.each do |board|
+#             board.map do |arr|
+#               arr = arr - [num.to_s] if arr.include?(num.to_s)
+#               arr
+#             end
+#         end
+#     end
+#   end
+      
+    
+  
+#   p "Here is the first board before anything happens:"
+#   p get_first_bingo_board(board).map {|str| str.split(" ")}
+#   # remove num from first bingo board:
+#   # OKAY THIS WORKS
+#   new_first_board = get_first_bingo_board(board).map {|str| str.split(" ")}.map do |arr|
+#     arr = arr - [num.to_s] if arr.include?(num.to_s)
+#     arr
+#   end
+# #   new_second_board = get_second_bingo_board(board).map {|str| str.gsub(/num/, "")}
+# #   new_third_board = get_third_bingo_board(board).map {|str| str.gsub(/num/, "")}
+#   p "And here is that same board after num is removed:"
+#   p new_first_board
 end
 
 # p "Here is the first bingo board:"
@@ -80,4 +128,5 @@ end
 # p "Here are the columns of the first board:"
 # p get_columns(get_first_bingo_board(bingo_boards))
 
-call_a_number(22, bingo_boards)
+nums = [22, 13, 17, 11, 0]
+call_a_number(nums, bingo_boards)
